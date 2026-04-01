@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abdullah Layth — Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070709;
+    --bg2: #0d0d12;
+    --bg3: #111118;
+    --surface: #16161f;
+    --border: #1e1e2e;
+    --border2: #2a2a3d;
+    --cyan: #00e5ff;
+    --cyan2: #00b4cc;
+    --cyan-dim: rgba(0,229,255,0.08);
+    --cyan-glow: rgba(0,229,255,0.15);
+    --green: #39ff6e;
+    --orange: #ff9500;
+    --purple: #a855f7;
+    --text: #e2e2e8;
+    --text2: #8888a0;
+    --text3: #55556a;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* ─── CURSOR ─── */
+  #cursor {
+    position: fixed; width: 10px; height: 10px;
+    background: var(--cyan); border-radius: 50%;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: width .2s, height .2s;
+    box-shadow: 0 0 12px var(--cyan), 0 0 30px rgba(0,229,255,0.4);
+  }
+  #cursor-ring {
+    position: fixed; width: 36px; height: 36px;
+    border: 1px solid rgba(0,229,255,0.4); border-radius: 50%;
+    pointer-events: none; z-index: 9998;
+    transform: translate(-50%,-50%);
+    transition: width .2s, height .2s;
+  }
+
+  /* ─── SCANLINE ─── */
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
+    pointer-events: none; z-index: 9990;
+  }
+
+  /* ─── NAVBAR ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    padding: 0 5%; display: flex; align-items: center; justify-content: space-between;
+    height: 60px; background: rgba(7,7,9,0.5);
+    backdrop-filter: blur(20px); border-bottom: 1px solid transparent;
+    transition: border-color .3s, background .3s;
+  }
+  nav.scrolled { border-color: var(--border); background: rgba(7,7,9,0.96); }
+  .nav-logo { font-size: 13px; font-weight: 500; color: var(--cyan); letter-spacing: 0.05em; text-decoration: none; }
+  .nav-logo span { color: var(--text3); }
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a {
+    font-size: 12px; color: var(--text2); text-decoration: none;
+    letter-spacing: 0.08em; transition: color .2s;
+  }
+  .nav-links a::before { content: '//'; color: var(--cyan); margin-right: 5px; opacity: 0; transition: opacity .2s; }
+  .nav-links a:hover { color: var(--cyan); }
+  .nav-links a:hover::before { opacity: 1; }
+
+  .nav-hamburger {
+    display: none; flex-direction: column; gap: 5px;
+    background: none; border: none; cursor: pointer; padding: 4px;
+  }
+  .nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text2); border-radius: 2px; transition: all .3s; }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* ─── HERO ─── */
+  #hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center; padding: 80px 5% 60px; gap: 40px;
+    position: relative; overflow: hidden;
+  }
+  #hero::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(0,229,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.03) 1px,transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent);
+  }
+  .hero-left { position: relative; z-index: 2; }
+
+  .hero-tag {
+    font-size: 11px; color: var(--cyan); letter-spacing: 0.2em;
+    text-transform: uppercase; margin-bottom: 24px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .hero-tag::before { content: ''; width: 24px; height: 1px; background: var(--cyan); }
+
+  .hero-name {
+    font-family: var(--sans); font-size: clamp(36px,5vw,64px);
+    font-weight: 800; line-height: 1.05; margin-bottom: 8px;
+    color: var(--text); letter-spacing: -0.02em;
+  }
+  .hero-name .hl { color: var(--cyan); }
+  .hero-handle { font-size: 13px; color: var(--text3); margin-bottom: 32px; letter-spacing: 0.05em; }
+  .hero-handle span { color: var(--cyan2); }
+
+  .hero-headline {
+    font-family: var(--sans); font-size: clamp(17px,2.4vw,26px);
+    font-weight: 700; color: var(--text); margin-bottom: 20px; line-height: 1.3;
+    min-height: 2.6em;
+  }
+
+  .hero-sub {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-left: 3px solid var(--cyan); padding: 16px 20px;
+    border-radius: 0 6px 6px 0; font-size: 12px; line-height: 1.9;
+    color: var(--text2); margin-bottom: 36px; overflow-x: auto;
+  }
+  .hero-sub .comment { color: var(--text3); }
+  .hero-sub .kw { color: var(--cyan); }
+  .hero-sub .str { color: var(--green); }
+  .hero-sub .type { color: var(--orange); }
+
+  .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    font-family: var(--mono); font-size: 12px; padding: 10px 24px;
+    border-radius: 4px; cursor: none; text-decoration: none;
+    letter-spacing: 0.08em; transition: all .2s; display: inline-block;
+  }
+  .btn-primary { background: var(--cyan); color: var(--bg); border: 1px solid var(--cyan); font-weight: 700; }
+  .btn-primary:hover { background: transparent; color: var(--cyan); box-shadow: 0 0 20px var(--cyan-glow); }
+  .btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border2); }
+  .btn-ghost:hover { border-color: var(--cyan); color: var(--cyan); }
+
+  /* Terminal */
+  .hero-right { position: relative; z-index: 2; }
+  .terminal {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden;
+    box-shadow: 0 0 60px rgba(0,229,255,0.06),0 20px 60px rgba(0,0,0,0.5);
+  }
+  .terminal-bar {
+    background: var(--surface); padding: 10px 16px;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r{background:#ff5f57}.dot-y{background:#febc2e}.dot-g{background:#28c840}
+  .terminal-title { font-size: 11px; color: var(--text3); margin-left: 8px; letter-spacing: 0.05em; }
+  .terminal-body { padding: 20px; font-size: 12px; line-height: 2; }
+  .t-line { display: flex; gap: 8px; }
+  .t-prompt{color:var(--cyan);user-select:none}
+  .t-out{color:var(--text2);padding-left:16px}
+  .t-green{color:var(--green)}.t-dim{color:var(--text3)}
+  .cursor-blink {
+    display: inline-block; width: 8px; height: 14px;
+    background: var(--cyan); animation: blink 1s step-end infinite;
+    vertical-align: middle; margin-left: 2px;
+  }
+  @keyframes blink{50%{opacity:0}}
+
+  /* ─── SECTIONS ─── */
+  section { padding: 100px 5%; }
+  .section-label {
+    font-size: 11px; color: var(--cyan); letter-spacing: 0.25em;
+    text-transform: uppercase; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-label::after { content:'';flex:1;max-width:60px;height:1px;background:var(--border2); }
+  .section-title {
+    font-family: var(--sans); font-size: clamp(26px,4vw,44px);
+    font-weight: 800; margin-bottom: 52px; line-height: 1.1; letter-spacing: -0.02em;
+  }
+
+  /* ─── SKILLS ─── */
+  #skills { background: var(--bg2); }
+  .skills-grid {
+    display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+    gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+  }
+  .skill-card {
+    background: var(--bg2); padding: 30px 26px;
+    transition: background .2s; position: relative; overflow: hidden;
+  }
+  .skill-card::before {
+    content:'';position:absolute;top:0;left:0;width:100%;height:2px;
+    background:linear-gradient(90deg,var(--cyan),transparent);
+    transform:scaleX(0);transform-origin:left;transition:transform .3s;
+  }
+  .skill-card:hover{background:var(--surface)}
+  .skill-card:hover::before{transform:scaleX(1)}
+
+  .skill-icon-wrap {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: var(--bg3); border: 1px solid var(--border2);
+    display: flex; align-items: center; justify-content: center; margin-bottom: 18px;
+  }
+  .skill-icon-wrap svg { width: 22px; height: 22px; }
+  .skill-name { font-family: var(--sans); font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+  .skill-desc { font-size: 11.5px; color: var(--text2); line-height: 1.8; }
+  .skill-tag {
+    display: inline-block; margin-top: 14px; font-size: 10px; padding: 3px 9px;
+    border-radius: 3px; border: 1px solid var(--border2); color: var(--text3);
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+
+  /* ─── PROJECTS ─── */
+  #projects { background: var(--bg); }
+  .projects-grid {
+    display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 20px;
+  }
+  .project-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 26px 22px 22px;
+    transition: border-color .2s, transform .2s, box-shadow .2s;
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .project-card::after {
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(circle at 50% 0%,var(--cyan-dim),transparent 70%);
+    opacity:0;transition:opacity .3s;
+  }
+  .project-card:hover{border-color:var(--cyan2);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,229,255,0.08)}
+  .project-card:hover::after{opacity:1}
+
+  .project-num { font-size: 10px; color: var(--text3); letter-spacing: 0.15em; }
+  .project-lang-badge {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 11px; padding: 5px 12px; border-radius: 4px;
+    font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; width: fit-content;
+  }
+  .project-lang-badge svg { width: 13px; height: 13px; flex-shrink: 0; }
+  .badge-python{background:rgba(57,255,110,0.1);color:var(--green);border:1px solid rgba(57,255,110,0.2)}
+  .badge-cpp{background:rgba(168,85,247,0.1);color:var(--purple);border:1px solid rgba(168,85,247,0.2)}
+  .badge-ai{background:rgba(0,229,255,0.1);color:var(--cyan);border:1px solid rgba(0,229,255,0.2)}
+  .badge-flutter{background:rgba(255,149,0,0.1);color:var(--orange);border:1px solid rgba(255,149,0,0.2)}
+
+  .project-title { font-family: var(--sans); font-size: 18px; font-weight: 700; color: var(--text2); font-style: italic; }
+  .project-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 14px; border-top: 1px solid var(--border); margin-top: auto;
+  }
+  .project-status { font-size: 10px; color: var(--text3); letter-spacing: 0.1em; }
+  .project-link { font-size: 11px; color: var(--cyan); text-decoration: none; letter-spacing: 0.05em; transition: opacity .2s; }
+  .project-link:hover { opacity: 0.7; }
+
+  /* ─── ABOUT ─── */
+  #about { background: var(--bg2); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
+  .about-text p { font-size: 13px; color: var(--text2); line-height: 2; margin-bottom: 16px; }
+  .about-text p strong { color: var(--text); font-weight: 600; }
+  .about-text .hl { color: var(--cyan); }
+
+  .roadmap { position: relative; }
+  .roadmap-title { font-size: 11px; color: var(--text3); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 28px; }
+  .roadmap-line { position: absolute; left: 7px; top: 40px; bottom: 0; width: 1px; background: linear-gradient(to bottom,var(--border2),transparent); }
+  .roadmap-item { display: flex; gap: 20px; margin-bottom: 24px; position: relative; }
+  .roadmap-dot { width: 15px; height: 15px; border-radius: 50%; border: 2px solid; flex-shrink: 0; margin-top: 2px; position: relative; z-index: 1; }
+  .dot-done{border-color:var(--green);background:rgba(57,255,110,0.15)}
+  .dot-active{border-color:var(--cyan);background:rgba(0,229,255,0.15);animation:pulse-dot 2s infinite}
+  .dot-next{border-color:var(--orange);background:rgba(255,149,0,0.1)}
+  .dot-planned{border-color:var(--border2);background:transparent}
+  .dot-vision{border-color:var(--purple);background:rgba(168,85,247,0.1)}
+  @keyframes pulse-dot{0%,100%{box-shadow:0 0 0 0 rgba(0,229,255,0.4)}50%{box-shadow:0 0 0 6px rgba(0,229,255,0)}}
+  .roadmap-content{flex:1}
+  .roadmap-item-name{font-size:13px;color:var(--text);font-weight:500;margin-bottom:2px}
+  .roadmap-item-detail{font-size:11px;color:var(--text3);line-height:1.6}
+  .roadmap-badge{font-size:9px;padding:2px 8px;border-radius:2px;letter-spacing:.12em;font-weight:600;text-transform:uppercase;float:right;margin-top:2px}
+  .b-done{background:rgba(57,255,110,0.1);color:var(--green)}
+  .b-active{background:rgba(0,229,255,0.1);color:var(--cyan)}
+  .b-next{background:rgba(255,149,0,0.1);color:var(--orange)}
+  .b-planned{background:rgba(255,255,255,0.04);color:var(--text3)}
+  .b-vision{background:rgba(168,85,247,0.1);color:var(--purple)}
+
+  /* ─── CONTACT ─── */
+  #contact { background: var(--bg); }
+  .contact-inner { max-width: 780px; }
+  .contact-headline {
+    font-family: var(--sans); font-size: clamp(32px,5vw,56px);
+    font-weight: 800; line-height: 1.1; margin-bottom: 16px; letter-spacing: -0.02em;
+  }
+  .contact-sub { font-size: 13px; color: var(--text2); line-height: 1.9; margin-bottom: 48px; max-width: 500px; }
+
+  .contact-links {
+    display: grid; grid-template-columns: repeat(2,1fr); gap: 14px;
+  }
+  .contact-link {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 18px; text-decoration: none; min-width: 0;
+    transition: border-color .2s, background .2s, transform .15s;
+  }
+  .contact-link:hover { border-color: var(--cyan); background: var(--surface); transform: translateX(4px); }
+  .contact-link-icon {
+    width: 40px; height: 40px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg3); border: 1px solid var(--border2); flex-shrink: 0;
+  }
+  .contact-link-icon svg { width: 19px; height: 19px; }
+  .contact-link-info { flex: 1; min-width: 0; }
+  .contact-link-label { font-size: 10px; color: var(--text3); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 3px; }
+  .contact-link-value {
+    font-size: 12px; color: var(--text); letter-spacing: 0.01em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .contact-link-arrow { font-size: 14px; color: var(--text3); transition: color .2s,transform .2s; flex-shrink: 0; }
+  .contact-link:hover .contact-link-arrow { color: var(--cyan); transform: translateX(3px); }
+  .contact-link.soon { opacity: 0.4; pointer-events: none; }
+  .soon-badge { font-size: 9px; background: var(--border); color: var(--text3); padding: 2px 7px; border-radius: 2px; letter-spacing: .1em; margin-left: 6px; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    border-top: 1px solid var(--border); padding: 24px 5%;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; color: var(--text3); flex-wrap: wrap; gap: 8px;
+  }
+
+  /* ─── REVEAL ─── */
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1{transition-delay:.1s}.reveal-delay-2{transition-delay:.2s}
+  .reveal-delay-3{transition-delay:.3s}.reveal-delay-4{transition-delay:.4s}
+
+  ::-webkit-scrollbar{width:4px}
+  ::-webkit-scrollbar-track{background:var(--bg)}
+  ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+  /* ════════════════════
+     RESPONSIVE
+  ════════════════════ */
+  @media (max-width: 900px) {
+    #hero { grid-template-columns: 1fr; padding: 100px 5% 60px; min-height: auto; gap: 36px; }
+    .hero-right { width: 100%; max-width: 560px; }
+    .about-grid { grid-template-columns: 1fr; gap: 48px; }
+    .contact-links { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 600px) {
+    section { padding: 72px 5%; }
+    nav { padding: 0 4%; }
+    .nav-links {
+      display: none; flex-direction: column;
+      position: absolute; top: 60px; left: 0; right: 0;
+      background: rgba(7,7,9,0.97); border-bottom: 1px solid var(--border);
+      padding: 20px 5%; gap: 20px;
+    }
+    .nav-links.open { display: flex; }
+    .nav-hamburger { display: flex; }
+
+    #hero { padding: 90px 4% 52px; }
+    .hero-right { display: none; }
+    .hero-name { font-size: clamp(30px,9vw,44px); }
+    .hero-headline { font-size: clamp(16px,5vw,21px); }
+    .hero-sub { font-size: 11px; padding: 12px 14px; }
+
+    .skills-grid { grid-template-columns: 1fr; }
+    .projects-grid { grid-template-columns: 1fr; }
+
+    .contact-links { grid-template-columns: 1fr; gap: 10px; }
+    .contact-link { padding: 14px 14px; gap: 12px; }
+    .contact-link-value { font-size: 11.5px; }
+
+    footer { flex-direction: column; text-align: center; font-size: 10px; }
+  }
+
+  @media (max-width: 380px) {
+    .contact-link-value { font-size: 10.5px; }
+    .hero-sub { font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">abdullah<span>.dev</span></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#skills" onclick="closeNav()">skills</a></li>
+    <li><a href="#projects" onclick="closeNav()">projects</a></li>
+    <li><a href="#about" onclick="closeNav()">about</a></li>
+    <li><a href="#contact" onclick="closeNav()">contact</a></li>
+  </ul>
+  <button class="nav-hamburger" id="hamburger" onclick="toggleNav()" aria-label="menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-tag reveal">init portfolio.exe</div>
+    <h1 class="hero-name reveal reveal-delay-1">Abdullah<br><span class="hl">Layth</span></h1>
+    <p class="hero-handle reveal reveal-delay-1"><span>@</span>abdullah.devx</p>
+    <h2 class="hero-headline reveal reveal-delay-2"></h2>
+    <div class="hero-sub reveal reveal-delay-3">
+      <div class="t-line"><span class="comment">// role</span></div>
+      <div class="t-line"><span class="kw">const</span>&nbsp;<span class="type">developer</span>&nbsp;=&nbsp;<span class="str">"Flutter · Python · C++"</span></div>
+      <div class="t-line"><span class="comment">// path</span></div>
+      <div class="t-line"><span class="kw">const</span>&nbsp;<span class="type">path</span>&nbsp;=&nbsp;<span class="str">"Mobile → AI → Autonomous Systems"</span></div>
+    </div>
+    <div class="hero-btns reveal reveal-delay-4">
+      <a href="#projects" class="btn btn-primary">view projects</a>
+      <a href="#contact" class="btn btn-ghost">get in touch</a>
+    </div>
+  </div>
+
+  <div class="hero-right reveal reveal-delay-2">
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+        <span class="terminal-title">~/ abdullah-devx</span>
+      </div>
+      <div class="terminal-body">
+        <div class="t-line"><span class="t-prompt">❯</span><span style="color:var(--text)"> whoami</span></div>
+        <div class="t-out t-green">Abdullah Layth — CS Student & Developer</div>
+        <div class="t-line" style="margin-top:10px"><span class="t-prompt">❯</span><span style="color:var(--text)"> cat skills.json</span></div>
+        <div class="t-out"><span style="color:var(--orange)">"flutter"</span>: <span class="t-green">"building real apps"</span>,</div>
+        <div class="t-out"><span style="color:var(--orange)">"python"</span>: <span class="t-green">"OOP + databases"</span>,</div>
+        <div class="t-out"><span style="color:var(--orange)">"cpp"</span>: <span class="t-green">"fundamentals + OOP"</span>,</div>
+        <div class="t-out"><span style="color:var(--orange)">"ai"</span>: <span style="color:var(--purple)">"in progress..."</span></div>
+        <div class="t-line" style="margin-top:10px"><span class="t-prompt">❯</span><span style="color:var(--text)"> ./run_mission.sh</span></div>
+        <div class="t-out t-dim">Loading roadmap...</div>
+        <div class="t-out">Phase 1: <span class="t-green">✓ Flutter Dev</span></div>
+        <div class="t-out">Phase 2: <span class="t-green">✓ Python + OOP</span></div>
+        <div class="t-out">Phase 3: <span style="color:var(--orange)">⟳ AI Agent Dev</span></div>
+        <div class="t-out">Phase 4: <span class="t-dim">... Robotics Eng</span></div>
+        <div class="t-line" style="margin-top:10px"><span class="t-prompt">❯</span><span class="cursor-blink"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SKILLS ─── -->
+<section id="skills">
+  <div class="section-label reveal">02 // skills</div>
+  <h2 class="section-title reveal reveal-delay-1">What I Build With</h2>
+  <div class="skills-grid">
+
+    <!-- Flutter -->
+    <div class="skill-card reveal">
+      <div class="skill-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13 4L4 13l4 4 9-9-4-4z"/>
+          <path d="M8 17l4 4 8-8"/>
+          <path d="M12 21l-4-4"/>
+        </svg>
+      </div>
+      <div class="skill-name">Flutter / Dart</div>
+      <p class="skill-desc">Building real mobile apps with Flutter & Dart — working toward landing my first job or freelance client.</p>
+      <span class="skill-tag">mobile dev</span>
+    </div>
+
+    <!-- Python -->
+    <div class="skill-card reveal reveal-delay-1">
+      <div class="skill-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2c-2.8 0-5 1.5-5 4v2.5h5v.5H5.5C3.5 9 2 10.5 2 12.5S3.5 16 5.5 16H7v-2c0-1.7 1.3-3 3-3h4c1.7 0 3-1.3 3-3V6c0-2.5-2.2-4-5-4z"/>
+          <path d="M12 22c2.8 0 5-1.5 5-4v-2.5h-5v-.5h6.5c2 0 3.5-1.5 3.5-3.5S20.5 8 18.5 8H17v2c0 1.7-1.3 3-3 3H10c-1.7 0-3 1.3-3 3V18c0 2.5 2.2 4 5 4z"/>
+          <circle cx="9.5" cy="5.5" r=".8" fill="var(--green)" stroke="none"/>
+          <circle cx="14.5" cy="18.5" r=".8" fill="var(--green)" stroke="none"/>
+        </svg>
+      </div>
+      <div class="skill-name">Python</div>
+      <p class="skill-desc">Solid Python foundation — OOP and databases. The base for future AI & backend work.</p>
+      <span class="skill-tag">OOP · SQLite</span>
+    </div>
+
+    <!-- C++ -->
+    <div class="skill-card reveal reveal-delay-2">
+      <div class="skill-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <rect x="7" y="7" width="10" height="10" rx="1"/>
+          <path d="M3 8h1M3 12h1M3 16h1M20 8h1M20 12h1M20 16h1M8 3v1M12 3v1M16 3v1M8 20v1M12 20v1M16 20v1"/>
+        </svg>
+      </div>
+      <div class="skill-name">C++</div>
+      <p class="skill-desc">C++ fundamentals and OOP — builds the systems-thinking mindset needed for robotics and embedded engineering.</p>
+      <span class="skill-tag">systems thinking</span>
+    </div>
+
+    <!-- AI -->
+    <div class="skill-card reveal reveal-delay-3">
+      <div class="skill-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="2.5"/>
+          <path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
+          <path d="M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M16.3 7.7l-2.1 2.1M7.7 16.3l-2.1 2.1"/>
+          <circle cx="12" cy="12" r="7" stroke-dasharray="2.5 2.5" opacity=".4"/>
+        </svg>
+      </div>
+      <div class="skill-name">AI & Robotics</div>
+      <p class="skill-desc">Currently studying AI agent development — intelligent systems that perceive, reason, and act. Path: AI Agents → Autonomous Systems → Robotics.</p>
+      <span class="skill-tag">in progress</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── PROJECTS ─── -->
+<section id="projects">
+  <div class="section-label reveal">03 // projects</div>
+  <h2 class="section-title reveal reveal-delay-1">Things I've Built</h2>
+  <div class="projects-grid">
+
+    <!-- Python -->
+    <div class="project-card reveal">
+      <div class="project-num">PROJECT_01</div>
+      <div class="project-lang-badge badge-python">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2c-2.8 0-5 1.5-5 4v2.5h5v.5H5.5C3.5 9 2 10.5 2 12.5S3.5 16 5.5 16H7v-2c0-1.7 1.3-3 3-3h4c1.7 0 3-1.3 3-3V6c0-2.5-2.2-4-5-4z"/>
+          <path d="M12 22c2.8 0 5-1.5 5-4v-2.5h-5v-.5h6.5c2 0 3.5-1.5 3.5-3.5S20.5 8 18.5 8H17v2c0 1.7-1.3 3-3 3H10c-1.7 0-3 1.3-3 3V18c0 2.5 2.2 4 5 4z"/>
+        </svg>
+        Python
+      </div>
+      <div class="project-title">Coming Soon</div>
+      <div class="project-footer">
+        <span class="project-status">◌ Soon</span>
+        <a href="https://github.com/abdullah-devx" target="_blank" class="project-link">github →</a>
+      </div>
+    </div>
+
+    <!-- C++ -->
+    <div class="project-card reveal reveal-delay-1">
+      <div class="project-num">PROJECT_02</div>
+      <div class="project-lang-badge badge-cpp">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <rect x="7" y="7" width="10" height="10" rx="1"/>
+          <path d="M3 8h1M3 16h1M20 8h1M20 16h1M8 3v1M16 3v1M8 20v1M16 20v1"/>
+        </svg>
+        C++
+      </div>
+      <div class="project-title">Coming Soon</div>
+      <div class="project-footer">
+        <span class="project-status">◌ Soon</span>
+        <a href="https://github.com/abdullah-devx" target="_blank" class="project-link">github →</a>
+      </div>
+    </div>
+
+    <!-- AI -->
+    <div class="project-card reveal reveal-delay-2">
+      <div class="project-num">PROJECT_03</div>
+      <div class="project-lang-badge badge-ai">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="2.5"/>
+          <path d="M12 2v3M12 19v3M2 12h3M19 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M16.3 7.7l-2.1 2.1M7.7 16.3l-2.1 2.1"/>
+        </svg>
+        AI Agent
+      </div>
+      <div class="project-title">Coming Soon</div>
+      <div class="project-footer">
+        <span class="project-status">◌ Soon</span>
+        <a href="https://github.com/abdullah-devx" target="_blank" class="project-link">github →</a>
+      </div>
+    </div>
+
+    <!-- Flutter -->
+    <div class="project-card reveal reveal-delay-3">
+      <div class="project-num">PROJECT_04</div>
+      <div class="project-lang-badge badge-flutter">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13 4L4 13l4 4 9-9-4-4z"/>
+          <path d="M8 17l4 4 8-8"/>
+          <path d="M12 21l-4-4"/>
+        </svg>
+        Flutter
+      </div>
+      <div class="project-title">Coming Soon</div>
+      <div class="project-footer">
+        <span class="project-status">◌ Soon</span>
+        <a href="https://github.com/abdullah-devx" target="_blank" class="project-link">github →</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── ABOUT ─── -->
+<section id="about">
+  <div class="section-label reveal">04 // about</div>
+  <h2 class="section-title reveal reveal-delay-1">The Direction</h2>
+  <div class="about-grid">
+    <div class="about-text reveal reveal-delay-1">
+      <p>I'm <strong>Abdullah Layth</strong>, a developer with a clear direction — <span class="hl">today building apps</span>, tomorrow engineering intelligent machines.</p>
+      <p>I don't just want to write code. I want to understand systems deeply — from mobile UX to AI agents to autonomous machines. The goal is always the same: <span class="hl">build things that work intelligently.</span></p>
+    </div>
+    <div class="roadmap reveal reveal-delay-2">
+      <div class="roadmap-title">// self_log.txt — learning roadmap</div>
+      <div class="roadmap-line"></div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot dot-done"></div>
+        <div class="roadmap-content">
+          <div class="roadmap-item-name">Python <span class="roadmap-badge b-done">Done</span></div>
+          <div class="roadmap-item-detail">Full — OOP, Databases, CLI Projects</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot dot-done"></div>
+        <div class="roadmap-content">
+          <div class="roadmap-item-name">C++ Basics & OOP <span class="roadmap-badge b-done">Done</span></div>
+          <div class="roadmap-item-detail">Fundamentals, pointers, OOP mindset</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot dot-done"></div>
+        <div class="roadmap-content">
+          <div class="roadmap-item-name">Dart & Flutter <span class="roadmap-badge b-done">Done</span></div>
+          <div class="roadmap-item-detail">Full Dart course, Flutter app development</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot dot-active"></div>
+        <div class="roadmap-content">
+          <div class="roadmap-item-name">AI Agent Development <span class="roadmap-badge b-active">Active</span></div>
+          <div class="roadmap-item-detail">Building agents that perceive, reason, and act</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot dot-next"></div>
+        <div class="roadmap-content">
+          <div class="roadmap-item-name">Autonomous Systems <span class="roadmap-badge b-next">Next</span></div>
+          <div class="roadmap-item-detail">Perception, planning, control systems</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot dot-vision"></div>
+        <div class="roadmap-content">
+          <div class="roadmap-item-name">Robotics Engineering <span class="roadmap-badge b-vision">Vision</span></div>
+          <div class="roadmap-item-detail">The long game — intelligent machines in the real world</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CONTACT ─── -->
+<section id="contact">
+  <div class="section-label reveal">05 // contact</div>
+  <div class="contact-inner">
+    <h2 class="contact-headline reveal reveal-delay-1">Let's<br><span style="color:var(--cyan)">Connect.</span></h2>
+    <p class="contact-sub reveal reveal-delay-2">
+      Got a project in mind? Whether you need a Flutter app, want to collaborate, or just want to talk tech — my inbox is open.
+    </p>
+    <div class="contact-links reveal reveal-delay-3">
+
+      <!-- Email -->
+      <a href="mailto:abdullahlayth90@gmail.com" class="contact-link">
+        <div class="contact-link-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="M2 7l10 7 10-7"/>
+          </svg>
+        </div>
+        <div class="contact-link-info">
+          <div class="contact-link-label">Email</div>
+          <div class="contact-link-value">abdullahlayth90@gmail.com</div>
+        </div>
+        <span class="contact-link-arrow">→</span>
+      </a>
+
+      <!-- GitHub -->
+      <a href="https://github.com/abdullah-devx" target="_blank" class="contact-link">
+        <div class="contact-link-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/>
+          </svg>
+        </div>
+        <div class="contact-link-info">
+          <div class="contact-link-label">GitHub</div>
+          <div class="contact-link-value">@abdullah-devx</div>
+        </div>
+        <span class="contact-link-arrow">→</span>
+      </a>
+
+      <!-- Instagram -->
+      <a href="https://www.instagram.com/abdullah.devx/" target="_blank" class="contact-link">
+        <div class="contact-link-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17.5" cy="6.5" r="0.9" fill="var(--purple)" stroke="none"/>
+          </svg>
+        </div>
+        <div class="contact-link-info">
+          <div class="contact-link-label">Instagram</div>
+          <div class="contact-link-value">@abdullah.devx</div>
+        </div>
+        <span class="contact-link-arrow">→</span>
+      </a>
+
+      <!-- LinkedIn soon -->
+      <div class="contact-link soon">
+        <div class="contact-link-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/>
+            <rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+          </svg>
+        </div>
+        <div class="contact-link-info">
+          <div class="contact-link-label">LinkedIn</div>
+          <div class="contact-link-value">Coming soon <span class="soon-badge">soon</span></div>
+        </div>
+        <span class="contact-link-arrow">→</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>© 2026 — Abdullah Layth</span>
+  <span>Built with intention · @abdullah.devx</span>
+</footer>
+
+<script>
+// ── Cursor (desktop only)
+const isTouch = () => window.matchMedia('(hover:none)').matches;
+const cursor = document.getElementById('cursor');
+const ring   = document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+
+if (!isTouch()) {
+  document.addEventListener('mousemove', e => {
+    mx=e.clientX; my=e.clientY;
+    cursor.style.left=mx+'px'; cursor.style.top=my+'px';
+  });
+  (function animateRing(){
+    rx+=(mx-rx)*.12; ry+=(my-ry)*.12;
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    requestAnimationFrame(animateRing);
+  })();
+  document.querySelectorAll('a,button,.skill-card,.project-card,.contact-link').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cursor.style.width='16px';cursor.style.height='16px';ring.style.width='52px';ring.style.height='52px'});
+    el.addEventListener('mouseleave',()=>{cursor.style.width='10px';cursor.style.height='10px';ring.style.width='36px';ring.style.height='36px'});
+  });
+} else {
+  cursor.style.display='none'; ring.style.display='none';
+  document.body.style.cursor='auto';
+}
+
+// ── Hamburger
+function toggleNav(){
+  document.getElementById('navLinks').classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('open');
+}
+function closeNav(){
+  document.getElementById('navLinks').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+}
+
+// ── Navbar scroll
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 40));
+
+// ── Reveal
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);} });
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// ── Typing effect
+const headline = document.querySelector('.hero-headline');
+const fullText = 'Building Digital Things<br>That Matter.';
+let i = 0;
+function type() {
+  if (i <= fullText.length) {
+    const shown = fullText.slice(0, i);
+    const caretVisible = i < fullText.length;
+    headline.innerHTML = shown + (caretVisible ? '<span style="border-right:2px solid var(--cyan);margin-left:1px">&nbsp;</span>' : '');
+    i++;
+    setTimeout(type, i < 5 ? 120 : i > fullText.length - 4 ? 100 : 38);
+  }
+}
+setTimeout(type, 950);
+</script>
+</body>
+</html>
