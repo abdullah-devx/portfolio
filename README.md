@@ -1,55 +1,58 @@
 <div align="center">
 
-# <img src="https://raw.githubusercontent.com/ABSphinx/assets/main/bat-symbol.svg" width="32" align="center" /> ABDULLAH LAYTH
-### <sub style="color: #8888a0;">SYSTEM ARCHITECT &bull; AUTONOMOUS SYSTEMS &bull; C/C++ ENGINEERING</sub>
+# <img src="https://raw.githubusercontent.com/ABSphinx/assets/main/bat-symbol.svg" width="35" align="center" /> ABDULLAH LAYTH
+### <sub style="color: #c9793f; letter-spacing: 4px;">SYSTEM ARCHITECT &bull; AUTONOMOUS SYSTEMS &bull; C/C++</sub>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/OS-Arch%20Linux%20%2F%2F%20Hyprland-00e5ff?style=flat-square&logo=archlinux&logoColor=00e5ff&color=070709&labelColor=16161f" />
-  <img src="https://img.shields.io/badge/Core-C%20%2F%2F%20C++20-a855f7?style=flat-square&logo=cplusplus&logoColor=a855f7&color=070709&labelColor=16161f" />
-  <img src="https://img.shields.io/badge/Focus-Autonomous%20Agents-ff9500?style=flat-square&color=070709&labelColor=16161f" />
+  <img src="https://img.shields.io/badge/OS-Arch%20Linux-c9793f?style=flat-square&logo=archlinux&logoColor=c9793f&color=070709&labelColor=16161f" />
+  <img src="https://img.shields.io/badge/Stack-C%20%2F%20C++20-a855f7?style=flat-square&logo=cplusplus&logoColor=a855f7&color=070709&labelColor=16161f" />
+  <img src="https://img.shields.io/badge/Env-Hyprland-39ff6e?style=flat-square&logo=linux&logoColor=39ff6e&color=070709&labelColor=16161f" />
 </p>
 
 </div>
 
 ---
 
-### // 01. PROFILE BRIEF
+### ❯ whoami
+> **Software Engineer** focused on building digital things that matter. Operating at the intersection of low-level systems, AI agents, and autonomous robotics. Currently mastering **modern C++** and **Arch Linux** workflows.
 
-Junior-level C/C++ developer and systems engineering enthusiast based in Baghdad, Iraq. Operating at the intersection of low-level memory management, high-performance execution, and autonomous agent architectures. Committed to minimalist, unbloated codebases and cinematic dark aesthetics.
-
-```ini
-[identity]
-role        = Software Engineer (Autonomous Systems)
-stack       = C, C++, Python, Flutter
-environment = Arch Linux, Hyprland, Windows 10
-status      = Active / Independent Research
+```cpp
+struct Developer {
+    string name     = "Abdullah Layth";
+    string focus    = "Autonomous Systems // AI Agents";
+    string OS       = "Arch Linux (Hyprland)";
+    string status   = "Building the future, one byte at a time.";
+};
 ```
 
 ---
 
-### // 02. PINNED REPOSITORIES BLUEPRINT
-
-| Repository | Tech Stack | Architectural Description |
+### ❯ featured_projects
+| Project | Stack | Status |
 | :--- | :--- | :--- |
-| **`Alfred`** | `C++` `Agents` | Autonomous agent core written from scratch, prioritizing zero-overhead IPC and deterministic state machines. |
-| **`TaskCLI`** | `C++` `STL` | High-performance terminal task manager utilizing custom memory allocators and binary serialization. |
-| **`Rook`** | `C++` `Vision` | Low-level computer vision and sensor fusion pipeline for localized autonomous navigation. |
-| **`Vault`** | `Flutter` `C++` | Zero-knowledge local encryption vault utilizing a C++ cryptographic core bridged to Flutter. |
-| **`Pathfinder`** | `C++` `Algorithms` | Interactive pathfinding and graph traversal engine with real-time heuristic benchmarking. |
-| **`Dotfiles`** | `Hyprland` `Shell` | Minimalist Arch Linux tiling window manager configuration optimized for elite developer workflow. |
+| <b style="color: #c9793f;">Alfred</b> | `C++` `Agents` | `[In Progress]` Autonomous agent core with deterministic logic. |
+| <b style="color: #c9793f;">TaskCLI</b> | `C++` `STL` | `[Complete]` High-performance terminal task manager. |
+| <b style="color: #c9793f;">Rook</b> | `C++` `Vision` | `[Planning]` Low-level CV pipeline for navigation. |
+| <b style="color: #c9793f;">Vault</b> | `Flutter` `C++` | `[Development]` Local-first encrypted security vault. |
 
 ---
 
-### // 03. INDUSTRIAL WORKFLOW & COMMIT HYGIENE
-
-To maintain an elite engineering standard across all repositories, adherence to the following protocols is strictly enforced:
-
-* **Conventional Commits**: Format commits with precise prefixes (`feat:`, `fix:`, `perf:`, `refactor:`, `chore:`) reflecting exact code modifications.
-* **Zero Bloat Policy**: Reject unnecessary framework dependencies; favor standard template libraries (STL) and bare-metal implementations.
-* **Branch Isolation**: Direct pushes to `main` are restricted. All features and refactors must occur on dedicated feature branches with passing CI gates.
+### ❯ core_stack
+- **Languages:** `C`, `C++20`, `Python`, `Dart`
+- **Frameworks:** `Flutter`, `FastAPI`, `OpenCV`
+- **Tools:** `Git`, `CMake`, `Docker`, `Neovim`
 
 ---
+
+### ❯ connect
+<p align="left">
+  <a href="mailto:abdullahlayth90@gmail.com"><img src="https://img.shields.io/badge/Email-abdullahlayth90%40gmail.com-c9793f?style=flat-square&logo=gmail&logoColor=c9793f&color=070709&labelColor=16161f" /></a>
+  <a href="https://www.instagram.com/abdullah.devx/"><img src="https://img.shields.io/badge/Instagram-@abdullah.devx-a855f7?style=flat-square&logo=instagram&logoColor=a855f7&color=070709&labelColor=16161f" /></a>
+</p>
 
 <div align="center">
+  <br />
+  <img src="https://raw.githubusercontent.com/abdullah-devx/portfolio/main/background.jpg" width="100%" />
+  <br />
   <sub><i>"It's not who I am underneath, but what I do that defines me."</i></sub>
 </div>
